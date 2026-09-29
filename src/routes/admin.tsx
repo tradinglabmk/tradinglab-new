@@ -85,17 +85,13 @@ function AdminDashboard() {
         app.email.toLowerCase().includes(search.toLowerCase()) ||
         app.country.toLowerCase().includes(search.toLowerCase()) ||
         app.city.toLowerCase().includes(search.toLowerCase());
-      const matchesService =
-        serviceFilter === "all" || app.service === serviceFilter;
+      const matchesService = serviceFilter === "all" || app.service === serviceFilter;
       return matchesSearch && matchesService;
     });
   }, [applications, search, serviceFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated = filtered.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const goToPage = (page: number) => {
     setCurrentPage(page);
@@ -107,12 +103,8 @@ function AdminDashboard() {
     const mentorship = applications.filter(
       (a) => a.service === "1-на-1 индивидуално Mentorship",
     ).length;
-    const group = applications.filter(
-      (a) => a.service === "Group Coaching во мала група",
-    ).length;
-    const signals = applications.filter(
-      (a) => a.service === "Trading Signals",
-    ).length;
+    const group = applications.filter((a) => a.service === "Group Coaching во мала група").length;
+    const signals = applications.filter((a) => a.service === "Trading Signals").length;
     return { total, mentorship, group, signals };
   }, [applications]);
 
@@ -126,10 +118,7 @@ function AdminDashboard() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className="rounded-2xl border border-[#dfe6ef] bg-white p-5"
-              >
+              <div key={i} className="rounded-2xl border border-[#dfe6ef] bg-white p-5">
                 <div className="h-3 w-16 rounded bg-slate-200 animate-pulse mb-3" />
                 <div className="h-8 w-10 rounded bg-slate-200 animate-pulse" />
               </div>
@@ -137,10 +126,7 @@ function AdminDashboard() {
           </div>
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <div
-                key={i}
-                className="rounded-2xl border border-[#dfe6ef] bg-white px-5 py-4"
-              >
+              <div key={i} className="rounded-2xl border border-[#dfe6ef] bg-white px-5 py-4">
                 <div className="flex items-center gap-4">
                   <div className="h-10 w-10 rounded-full bg-slate-200 animate-pulse shrink-0" />
                   <div className="flex-1 space-y-2">
@@ -162,12 +148,8 @@ function AdminDashboard() {
       <div className="bg-[#f7f9fc] min-h-screen flex items-center justify-center px-4">
         <div className="w-full max-w-sm space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-[#0b1220] mb-2">
-              Admin Dashboard
-            </h1>
-            <p className="text-[#637083] text-sm">
-              Внесете ја лозинката за пристап
-            </p>
+            <h1 className="text-2xl font-bold text-[#0b1220] mb-2">Admin Dashboard</h1>
+            <p className="text-[#637083] text-sm">Внесете ја лозинката за пристап</p>
           </div>
           <div className="space-y-4">
             <div className="relative">
@@ -221,9 +203,7 @@ function AdminDashboard() {
                 )}
               </button>
             </div>
-            {authError && (
-              <p className="text-red-500 text-sm text-center">{authError}</p>
-            )}
+            {authError && <p className="text-red-500 text-sm text-center">{authError}</p>}
             <button
               onClick={handleAuth}
               disabled={authLoading}
@@ -284,21 +264,9 @@ function AdminDashboard() {
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <StatCard label="Вкупно" value={stats.total} color="#1457ff" />
-              <StatCard
-                label="Mentorship"
-                value={stats.mentorship}
-                color="#0ea5e9"
-              />
-              <StatCard
-                label="Group Coaching"
-                value={stats.group}
-                color="#0891b2"
-              />
-              <StatCard
-                label="Trading Signals"
-                value={stats.signals}
-                color="#4f46e5"
-              />
+              <StatCard label="Mentorship" value={stats.mentorship} color="#0ea5e9" />
+              <StatCard label="Group Coaching" value={stats.group} color="#0891b2" />
+              <StatCard label="Trading Signals" value={stats.signals} color="#4f46e5" />
             </div>
 
             {/* Filters */}
@@ -331,30 +299,22 @@ function AdminDashboard() {
                 className="rounded-xl border border-[#dfe6ef] bg-white px-4 py-3 text-sm text-[#0b1220] focus:border-[#1457ff] focus:outline-none transition-all duration-300"
               >
                 <option value="all">Сите услуги</option>
-                <option value="1-на-1 индивидуално Mentorship">
-                  Mentorship
-                </option>
-                <option value="Group Coaching во мала група">
-                  Group Coaching
-                </option>
+                <option value="1-на-1 индивидуално Mentorship">Mentorship</option>
+                <option value="Group Coaching во мала група">Group Coaching</option>
                 <option value="Trading Signals">Trading Signals</option>
               </select>
             </div>
 
             {/* Results count */}
             <p className="text-sm text-[#637083] mb-4">
-              {filtered.length}{" "}
-              {filtered.length === 1 ? "резултат" : "резултати"}
+              {filtered.length} {filtered.length === 1 ? "резултат" : "резултати"}
             </p>
 
             {/* Applications list */}
             {loading ? (
               <div className="space-y-3">
                 {[...Array(5)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="rounded-2xl border border-[#dfe6ef] bg-white px-5 py-4"
-                  >
+                  <div key={i} className="rounded-2xl border border-[#dfe6ef] bg-white px-5 py-4">
                     <div className="flex items-center gap-4">
                       <div className="h-10 w-10 rounded-full bg-slate-200 animate-pulse shrink-0" />
                       <div className="flex-1 space-y-2">
@@ -378,9 +338,7 @@ function AdminDashboard() {
                       key={app._id}
                       app={app}
                       isExpanded={expandedId === app._id}
-                      onToggle={() =>
-                        setExpandedId(expandedId === app._id ? null : app._id)
-                      }
+                      onToggle={() => setExpandedId(expandedId === app._id ? null : app._id)}
                       onDelete={() => setDeleteTarget(app)}
                     />
                   ))}
@@ -401,11 +359,7 @@ function AdminDashboard() {
                         stroke="currentColor"
                         strokeWidth={2}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M15 19l-7-7 7-7"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                       </svg>
                       Назад
                     </button>
@@ -413,26 +367,17 @@ function AdminDashboard() {
                     <div className="flex items-center gap-1">
                       {Array.from({ length: totalPages }, (_, i) => i + 1)
                         .filter(
-                          (p) =>
-                            p === 1 ||
-                            p === totalPages ||
-                            Math.abs(p - currentPage) <= 1,
+                          (p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1,
                         )
                         .reduce<(number | "...")[]>((acc, p, idx, arr) => {
-                          if (
-                            idx > 0 &&
-                            (p as number) - (arr[idx - 1] as number) > 1
-                          )
+                          if (idx > 0 && (p as number) - (arr[idx - 1] as number) > 1)
                             acc.push("...");
                           acc.push(p);
                           return acc;
                         }, [])
                         .map((p, idx) =>
                           p === "..." ? (
-                            <span
-                              key={`dots-${idx}`}
-                              className="px-2 text-[#8a95a6] text-sm"
-                            >
+                            <span key={`dots-${idx}`} className="px-2 text-[#8a95a6] text-sm">
                               …
                             </span>
                           ) : (
@@ -452,9 +397,7 @@ function AdminDashboard() {
                     </div>
 
                     <button
-                      onClick={() =>
-                        goToPage(Math.min(totalPages, currentPage + 1))
-                      }
+                      onClick={() => goToPage(Math.min(totalPages, currentPage + 1))}
                       disabled={currentPage === totalPages}
                       className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-[#dfe6ef] bg-white px-4 py-2 text-sm text-[#637083] hover:text-[#0b1220] hover:border-[#c3cedd] transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
                     >
@@ -466,11 +409,7 @@ function AdminDashboard() {
                         stroke="currentColor"
                         strokeWidth={2}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 5l7 7-7 7"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
                   </div>
@@ -496,9 +435,7 @@ function AdminDashboard() {
                 body: JSON.stringify({ id: deleteTarget._id }),
               });
               if (res.ok) {
-                setApplications((prev) =>
-                  prev.filter((a) => a._id !== deleteTarget._id),
-                );
+                setApplications((prev) => prev.filter((a) => a._id !== deleteTarget._id));
                 setExpandedId(null);
                 setDeleteTarget(null);
               }
@@ -528,10 +465,7 @@ function DeleteModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onCancel}
-      />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
       {/* Modal */}
       <div className="relative w-full max-w-sm rounded-2xl border border-[#dfe6ef] bg-white p-6 shadow-2xl">
         {/* Icon */}
@@ -587,20 +521,10 @@ function DeleteModal({
   );
 }
 
-function StatCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: number;
-  color: string;
-}) {
+function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className="rounded-2xl border border-[#dfe6ef] bg-white p-5 shadow-[0_10px_30px_rgba(10,22,48,0.06)]">
-      <p className="text-xs text-[#8a95a6] uppercase tracking-wider mb-1">
-        {label}
-      </p>
+      <p className="text-xs text-[#8a95a6] uppercase tracking-wider mb-1">{label}</p>
       <p className="text-3xl font-bold" style={{ color }}>
         {value}
       </p>
@@ -675,11 +599,7 @@ function ApplicationCard({
             stroke="currentColor"
             strokeWidth={2}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
         </div>
       </div>
@@ -692,10 +612,7 @@ function ApplicationCard({
             <DetailItem label="Држава" value={app.country} />
             <DetailItem label="Град" value={app.city} />
             <DetailItem label="Контакт метод" value={app.contactMethod} />
-            <DetailItem
-              label="Дополнителен контакт"
-              value={app.additionalContact || "—"}
-            />
+            <DetailItem label="Дополнителен контакт" value={app.additionalContact || "—"} />
             <DetailItem label="Услуга" value={app.service} />
             <DetailItem label="Датум" value={date} />
           </div>
@@ -708,11 +625,7 @@ function ApplicationCard({
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {Object.entries(app.mentorshipData).map(([key, val]) => (
-                  <DetailItem
-                    key={key}
-                    label={formatKey(key)}
-                    value={formatValue(val)}
-                  />
+                  <DetailItem key={key} label={formatKey(key)} value={formatValue(val)} />
                 ))}
               </div>
             </div>
@@ -726,11 +639,7 @@ function ApplicationCard({
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {Object.entries(app.groupCoachingData).map(([key, val]) => (
-                  <DetailItem
-                    key={key}
-                    label={formatKey(key)}
-                    value={formatValue(val)}
-                  />
+                  <DetailItem key={key} label={formatKey(key)} value={formatValue(val)} />
                 ))}
               </div>
             </div>
@@ -744,11 +653,7 @@ function ApplicationCard({
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {Object.entries(app.tradingSignalsData).map(([key, val]) => (
-                  <DetailItem
-                    key={key}
-                    label={formatKey(key)}
-                    value={formatValue(val)}
-                  />
+                  <DetailItem key={key} label={formatKey(key)} value={formatValue(val)} />
                 ))}
               </div>
             </div>
@@ -785,9 +690,7 @@ function ApplicationCard({
 function DetailItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl bg-slate-50 border border-[#e7ecf3] px-4 py-3">
-      <p className="text-[11px] text-[#8a95a6] uppercase tracking-wider mb-1">
-        {label}
-      </p>
+      <p className="text-[11px] text-[#8a95a6] uppercase tracking-wider mb-1">{label}</p>
       <p className="text-sm text-[#0b1220] whitespace-pre-wrap">{value}</p>
     </div>
   );

@@ -14,5 +14,13 @@ export default defineConfig({
   },
   // Deploy target is Vercel/Node (not the Lovable-default Cloudflare Workers),
   // since our server routes use the MongoDB driver and pdfkit (both need Node APIs).
-  nitro: { preset: "vercel" },
+  nitro: {
+    preset: "vercel",
+    // public/ is deployed as static CDN output, not copied into the function
+    // bundle, so the invoice PDF font must be bundled as a server asset instead.
+    // `serverAssets` is a valid nitro option, just missing from Lovable's
+    // intentionally narrow published type (see its `nitro` option doc comment).
+    serverAssets: [{ baseName: "fonts", dir: "./public/fonts" }],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any,
 });

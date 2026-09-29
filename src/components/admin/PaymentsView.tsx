@@ -100,10 +100,7 @@ export const PaymentsView = () => {
   }, [payments, search, planFilter, statusFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated = filtered.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
-  );
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   const stats = useMemo(() => {
     const paid = payments.filter((p) => p.status === "paid");
@@ -159,30 +156,16 @@ export const PaymentsView = () => {
           disabled={refreshing}
           className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[#dfe6ef] bg-white px-3 py-2 text-sm text-[#637083] transition-colors hover:border-[#c3cedd] hover:text-[#0b1220] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <RefreshCw
-            className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
-          />
+          <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
           Освежи
         </button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatCard
-          label="Вкупно уплати"
-          value={String(stats.total)}
-          color="#1457ff"
-        />
+        <StatCard label="Вкупно уплати" value={String(stats.total)} color="#1457ff" />
         <StatCard label="Приход" value={stats.revenue} color="#22c55e" />
-        <StatCard
-          label="Претплати"
-          value={String(stats.subs)}
-          color="#0891b2"
-        />
-        <StatCard
-          label="Еднократни"
-          value={String(stats.oneTime)}
-          color="#4f46e5"
-        />
+        <StatCard label="Претплати" value={String(stats.subs)} color="#0891b2" />
+        <StatCard label="Еднократни" value={String(stats.oneTime)} color="#4f46e5" />
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
@@ -240,11 +223,7 @@ export const PaymentsView = () => {
         <>
           <div className="space-y-3">
             {paginated.map((p) => (
-              <PaymentCard
-                key={p._id}
-                payment={p}
-                onDelete={() => setDeleteTarget(p)}
-              />
+              <PaymentCard key={p._id} payment={p} onDelete={() => setDeleteTarget(p)} />
             ))}
           </div>
 
@@ -284,13 +263,7 @@ export const PaymentsView = () => {
   );
 };
 
-function PaymentCard({
-  payment,
-  onDelete,
-}: {
-  payment: Payment;
-  onDelete: () => void;
-}) {
+function PaymentCard({ payment, onDelete }: { payment: Payment; onDelete: () => void }) {
   const statusColor =
     payment.status === "paid"
       ? "bg-green-50 text-green-700 border-green-200"
@@ -314,9 +287,7 @@ function PaymentCard({
             <p className="text-[#0b1220] font-medium text-[15px] truncate">
               {payment.customerName || "—"}
             </p>
-            <p className="text-[#637083] text-sm truncate">
-              {payment.customerEmail || "—"}
-            </p>
+            <p className="text-[#637083] text-sm truncate">{payment.customerEmail || "—"}</p>
             {payment.linkedApplicationId && (
               <span className="mt-1 inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700">
                 Има апликација
@@ -383,20 +354,10 @@ function PaymentCard({
   );
 }
 
-function StatCard({
-  label,
-  value,
-  color,
-}: {
-  label: string;
-  value: string;
-  color: string;
-}) {
+function StatCard({ label, value, color }: { label: string; value: string; color: string }) {
   return (
     <div className="rounded-2xl border border-[#dfe6ef] bg-white p-5 shadow-[0_10px_30px_rgba(10,22,48,0.06)]">
-      <p className="text-xs text-[#8a95a6] uppercase tracking-wider mb-1">
-        {label}
-      </p>
+      <p className="text-xs text-[#8a95a6] uppercase tracking-wider mb-1">{label}</p>
       <p className="text-2xl font-bold" style={{ color }}>
         {value}
       </p>
@@ -417,14 +378,9 @@ function DeleteModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onCancel}
-      />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
       <div className="relative w-full max-w-sm rounded-2xl border border-[#dfe6ef] bg-white p-6 shadow-2xl">
-        <h3 className="text-center text-lg font-semibold text-[#0b1220] mb-2">
-          Избриши уплата
-        </h3>
+        <h3 className="text-center text-lg font-semibold text-[#0b1220] mb-2">Избриши уплата</h3>
         <p className="text-center text-sm text-[#637083] mb-6">
           Дали сте сигурни дека сакате да ја избришете уплатата на{" "}
           <span className="font-medium text-[#0b1220]">{name}</span>?

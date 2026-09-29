@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import path from "path";
+import { useStorage } from "nitro/storage";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import PDFDocument from "pdfkit";
 import { getDb } from "@/lib/server/mongodb";
 import { BUSINESS_INFO } from "@/lib/data/businessInfo";
@@ -7,11 +9,27 @@ import { BUSINESS_INFO } from "@/lib/data/businessInfo";
 // Single variable font covering both Latin and Cyrillic glyphs. It has no
 // embedded bold instance, so boldText() fakes weight by double-drawing with
 // a slight offset instead of switching fonts.
-// Lives under public/ so it's always bundled with the deployment (unlike
-// arbitrary src/ files, which need explicit output file tracing config).
-const FONT_PATH = path.join(process.cwd(), "public/fonts/Roboto-Variable.ttf");
+// Loaded through nitro's server-asset storage (see vite.config.ts), which is
+// how the built serverless function gets the bytes: public/ is deployed as
+// static CDN output and isn't present alongside the function at runtime.
+// The plain `vite dev` server never runs nitro's build, so that mount is
+// empty locally — fall back to reading straight from public/ in that case.
+let fontDataPromise: Promise<Buffer> | null = null;
+function loadFontData(): Promise<Buffer> {
+  if (!fontDataPromise) {
+    fontDataPromise = useStorage("assets/fonts")
+      .getItemRaw("Roboto-Variable.ttf")
+      .then((raw) => {
+        if (raw) return Buffer.isBuffer(raw) ? raw : Buffer.from(raw as ArrayBuffer);
+        return readFile(
+          path.join(process.cwd(), "public/fonts/Roboto-Variable.ttf"),
+        );
+      });
+  }
+  return fontDataPromise;
+}
 
-function generateInvoicePdf(payment: {
+async function generateInvoicePdf(payment: {
   invoiceNumber?: string;
   createdAt: string;
   customerName: string;
@@ -20,11 +38,16 @@ function generateInvoicePdf(payment: {
   amount: number;
   currency: string;
 }): Promise<Buffer> {
+  const fontData = await loadFontData();
+
   return new Promise((resolve, reject) => {
-    // Pass our font directly so pdfkit never falls back to its built-in
-    // Helvetica, which crashes on serverless Node deployments (lazy-requires
-    // a data file that isn't bundled: "Cannot find module '#standard-fonts/Helvetica'").
-    const doc = new PDFDocument({ size: "A4", margin: 50, font: FONT_PATH });
+    // Omit `font` from the constructor (its type only allows a string path) and
+    // register our embedded font bytes immediately after instead, before pdfkit
+    // ever falls back to its built-in Helvetica, which crashes on serverless
+    // Node deployments (lazy-requires a data file that isn't bundled:
+    // "Cannot find module '#standard-fonts/Helvetica'").
+    const doc = new PDFDocument({ size: "A4", margin: 50 });
+    doc.font(fontData);
 
     const boldText = (
       text: string,
