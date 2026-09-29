@@ -1,35 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useStorage } from "nitro/storage";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import PDFDocument from "pdfkit";
 import { getDb } from "@/lib/server/mongodb";
 import { BUSINESS_INFO } from "@/lib/data/businessInfo";
+import fontBase64 from "@/lib/server/fonts/Roboto-Variable.ttf.b64.txt?raw";
 
 // Single variable font covering both Latin and Cyrillic glyphs. It has no
 // embedded bold instance, so boldText() fakes weight by double-drawing with
 // a slight offset instead of switching fonts.
-// Loaded through nitro's server-asset storage (see vite.config.ts), which is
-// how the built serverless function gets the bytes: public/ is deployed as
-// static CDN output and isn't present alongside the function at runtime.
-// The plain `vite dev` server never runs nitro's build, so that mount is
-// empty locally — fall back to reading straight from public/ in that case.
-let fontDataPromise: Promise<Buffer> | null = null;
-function loadFontData(): Promise<Buffer> {
-  if (!fontDataPromise) {
-    fontDataPromise = useStorage("assets/fonts")
-      .getItemRaw("Roboto-Variable.ttf")
-      .then((raw) => {
-        if (raw) return Buffer.isBuffer(raw) ? raw : Buffer.from(raw as ArrayBuffer);
-        return readFile(
-          path.join(process.cwd(), "public/fonts/Roboto-Variable.ttf"),
-        );
-      });
-  }
-  return fontDataPromise;
-}
+// Base64-embedded (Vite ?raw import) instead of read from public/ at runtime:
+// public/ is deployed as static CDN output and isn't present alongside the
+// serverless function, and nitro's server-asset bundling proved unreliable
+// between local and Vercel builds.
+const fontData = Buffer.from(fontBase64, "base64");
 
-async function generateInvoicePdf(payment: {
+function generateInvoicePdf(payment: {
   invoiceNumber?: string;
   createdAt: string;
   customerName: string;
@@ -38,8 +22,6 @@ async function generateInvoicePdf(payment: {
   amount: number;
   currency: string;
 }): Promise<Buffer> {
-  const fontData = await loadFontData();
-
   return new Promise((resolve, reject) => {
     // Omit `font` from the constructor (its type only allows a string path) and
     // register our embedded font bytes immediately after instead, before pdfkit
