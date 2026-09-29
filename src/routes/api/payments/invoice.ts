@@ -23,13 +23,18 @@ function generateInvoicePdf(payment: {
   currency: string;
 }): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    // Omit `font` from the constructor (its type only allows a string path) and
-    // register our embedded font bytes immediately after instead, before pdfkit
-    // ever falls back to its built-in Helvetica, which crashes on serverless
-    // Node deployments (lazy-requires a data file that isn't bundled:
-    // "Cannot find module '#standard-fonts/Helvetica'").
-    const doc = new PDFDocument({ size: "A4", margin: 50 });
-    doc.font(fontData);
+    // pdfkit's constructor always eagerly loads a font — `options.font` defaults
+    // to 'Helvetica' when omitted — so it must be passed here, not set via
+    // doc.font() afterward, or it crashes trying to lazy-require its bundled
+    // standard-font data ("Cannot find module '#standard-fonts/Helvetica'"),
+    // which doesn't survive being flattened into the serverless bundle.
+    // @types/pdfkit only types this constructor option as `string`, even
+    // though pdfkit itself accepts a Buffer; cast to satisfy tsc.
+    const doc = new PDFDocument({
+      size: "A4",
+      margin: 50,
+      font: fontData as unknown as string,
+    });
 
     const boldText = (
       text: string,
