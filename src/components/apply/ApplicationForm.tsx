@@ -24,10 +24,6 @@ const serviceOptions = [
     title: "Group Coaching во мала група",
     description: "Едукација и поддршка заедно со мала група трговци.",
   },
-  {
-    title: "Trading Signals",
-    description: "Аналитички trading идеи со Entry, SL и TP нивоа.",
-  },
 ];
 
 const additionalContactMeta: Record<string, { label: string; placeholder: string }> = {
